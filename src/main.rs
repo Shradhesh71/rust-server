@@ -4,7 +4,12 @@ use std::net::TcpStream;
 use std::io::prelude::*;
 
 fn main(){
-    let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
+    // let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
+    let port = std::env::var("PORT").unwrap_or_else(|_| "10000".to_string());
+    let addr = format!("0.0.0.0:{}", port);
+    let listener = TcpListener::bind(&addr)
+        .unwrap_or_else(|e| panic!("Failed to bind to {}: {}", addr, e));
+    println!("Listening on http://{}", addr);
 
     for stream in listener.incoming() {
         match stream {
